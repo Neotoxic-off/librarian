@@ -8,8 +8,7 @@ use memchr::memmem;
 use std::collections::HashMap;
 use std::path::Path;
 use rayon::prelude::*;
-use rayon::ThreadPoolBuilder;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, atomic::{AtomicUsize, Ordering}};
 
 mod arguments;
 mod constants;
@@ -100,40 +99,44 @@ fn get_filename(path: &Path) -> Option<String> {
         .map(|s| s.to_string())
 }
 
-fn process_file(file_path: &str, threshold: f64, detection_count: &Arc<Mutex<usize>>) {
+fn process_file(file_path: &str, threshold: f64, detection_count: &Arc<AtomicUsize>) -> bool {
     let file_name = get_filename(Path::new(file_path)).unwrap_or("Unknown".to_string());
 
     if inspect_file(file_path) {
-        let mut count = detection_count.lock().unwrap();
         if detect_script_patterns(file_path) || calculate_entropy(file_path, threshold) {
-            *count += 1;
+            detection_count.fetch_add(1, Ordering::Relaxed);
             info!("❌   {}", file_name);
-        } else {
-            info!("✔️   {}", file_name);
+            return true;
         }
+        info!("✔️   {}", file_name);
     }
+    false
 }
 
 fn scan_directory(folder: &str, threshold: f64, threads: usize) {
     info!("Scanning directory: {}", folder);
- 
-    let detection_count: Arc<Mutex<usize>> = Arc::new(Mutex::new(0));
-    let pool: rayon::ThreadPool = ThreadPoolBuilder::new().num_threads(threads).build().unwrap();
 
+    let thread_pool = rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .build()
+        .unwrap();
+
+    let detection_count = Arc::new(AtomicUsize::new(0));
     let entries: Vec<DirEntry> = WalkDir::new(folder)
         .into_iter()
         .filter_map(Result::ok)
         .filter(|e| e.file_type().is_file())
         .collect();
 
-    pool.install(|| {
+    thread_pool.install(|| {
         entries.par_iter().for_each(|entry| {
-            let file_path: String = entry.path().to_string_lossy().to_string();
-            process_file(&file_path, threshold, &detection_count);
+            let file_path = entry.path().to_string_lossy().to_string();
+            let detection_count_clone = Arc::clone(&detection_count);
+            process_file(&file_path, threshold, &detection_count_clone);
         });
     });
 
-    let count = *detection_count.lock().unwrap();
+    let count = detection_count.load(Ordering::Relaxed);
     info!("Scan completed. Detections found: {}", count);
 }
 
