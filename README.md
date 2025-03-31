@@ -2,9 +2,7 @@
 
 **Librarian** is a Rust-based **media malware scanner** that recursively scans directories for hidden threats in media files (MP4, MP3, AVI, MKV, DOC, PNG, etc.).
 
-<img src="assets/icon.png" height="25%" width="25%"/>
-
-## 🚀 Features
+## 👓 Features
 
 - ✅ Deep File Inspection – Verifies file headers to prevent polyglot attacks
 - ✅ Entropy Analysis – Flags files with unusually high entropy (possible encryption or packing)
@@ -12,6 +10,8 @@
 - ✅ Fast Recursive Scanning – Uses <code>walkdir</code> for deep directory analysis
 - ✅ Multi-threaded Processing – Parallel file scanning for maximum performance
 - ✅ CLI-based & Lightweight – Built with <code>clap</code> and <code>log</code> for efficiency
+
+<img src="assets/icon.png" height="25%" width="25%"/>
 
 ## 🔧 Installation
 
