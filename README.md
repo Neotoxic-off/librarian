@@ -4,12 +4,12 @@
 
 ## 👓 Features
 
-- ✅ Deep File Inspection – Verifies file headers to prevent polyglot attacks
-- ✅ Entropy Analysis – Flags files with unusually high entropy (possible encryption or packing)
-- ✅ Script Injection Detection – Scans raw bytes for malicious patterns
-- ✅ Fast Recursive Scanning – Uses <code>walkdir</code> for deep directory analysis
-- ✅ Multi-threaded Processing – Parallel file scanning for maximum performance
-- ✅ CLI-based & Lightweight – Built with <code>clap</code> and <code>log</code> for efficiency
+- [X] Deep File Inspection – Verifies file headers to prevent polyglot attacks
+- [X] Entropy Analysis – Flags files with unusually high entropy (possible encryption or packing)
+- [X] Script Injection Detection – Scans raw bytes for malicious patterns
+- [X] Fast Recursive Scanning – Uses <code>walkdir</code> for deep directory analysis
+- [X] Multi-threaded Processing – Parallel file scanning for maximum performance
+- [X] CLI-based & Lightweight – Built with <code>clap</code> and <code>log</code> for efficiency
 
 <img src="assets/icon.png" height="25%" width="25%"/>
 
