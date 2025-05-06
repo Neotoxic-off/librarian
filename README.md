@@ -11,8 +11,6 @@
 - [X] Multi-threaded Processing – Parallel file scanning for maximum performance
 - [X] CLI-based & Lightweight – Built with <code>clap</code> and <code>log</code> for efficiency
 
-<img src="assets/icon.png" height="25%" width="25%"/>
-
 ## 🔧 Installation
 
 Ensure you have Rust installed. Then, clone the repository and build the project:
